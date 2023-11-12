@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 const Categories = () => {
 
     const [categories, setCategories] = useState(null);
+    const [newCategory, setNewCategory] = useState(null);
 
     useEffect(() => {
         getCategories();
@@ -20,6 +21,34 @@ const Categories = () => {
             });
     }
 
+    const handleInput = (event) => {
+        setNewCategory(event.target.value);
+    }
+
+    const createCategory = (event) => {
+        event.preventDefault();
+
+        const data = {
+            "name": newCategory
+        }
+
+        fetch("http://localhost:8080/categories", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            //if successfull reload categories list
+            getCategories();
+        }).catch(error => {
+            console.log(error);
+        }) 
+    }
+
     return (
         <div>
             <h1>Categories</h1>
@@ -33,6 +62,14 @@ const Categories = () => {
                     ))}
                 </ul>
             }
+
+            <h2>Create Category</h2>
+            <form onSubmit={createCategory}>
+                <label>Category Name</label>
+                <input type="text" required onChange={handleInput} />
+
+                <button type="submit">Save Category</button>
+            </form>
         </div>
     )
 }
