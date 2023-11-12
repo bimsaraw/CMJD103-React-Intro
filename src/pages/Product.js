@@ -25,6 +25,13 @@ const Product = () => {
     return (
         <div>
             <h1>Product</h1>
+            {product &&
+                <>
+                    <h2>{product.name}</h2>
+                    <div>Qty: {product.qty}</div>
+                    <div>Price: {product.price}</div>
+                </>
+            }
         </div>
     )
 }
