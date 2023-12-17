@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "react-date-picker";
 
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
+import axios from "axios";
 
 const Home = () => {
 
@@ -19,26 +20,26 @@ const Home = () => {
         getCategories();
     }, [])
 
-    const getProducts = () => {
-        fetch("http://localhost:8080/products")
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setProducts(data);
-            }).catch((error) => {
-                console.log(error);
-            });
+    const navigate = useNavigate();
+
+    const getProducts = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/products");
+            setProducts(response.data);
+        } catch (error) {
+            if(error.response.status === 401) {
+                navigate("/login");
+            }
+        }
     }
 
-    const getCategories = () => {
-        fetch('http://localhost:8080/categories')
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setCategories(data);
-            }).catch(error => {
-                console.log(error);
-            });
+    const getCategories = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/categories");
+            setCategories(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleName = (event) => {
